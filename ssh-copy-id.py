@@ -189,6 +189,9 @@ def main():
     # Parse arguments
     args = parser.parse_args()
 
+    if args.host is None and args.user and '@' in args.user:
+        args.user, args.host = args.user.split('@', 1)
+
     # Check if required arguments are provided
     if not args.user or not args.host:
         parser.print_help()
