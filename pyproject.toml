@@ -1,0 +1,11 @@
+[tool.isort]
+profile = 'black'
+line_length = 88
+py_version = '312'
+extend_skip_glob = ['**/__pycache__/**']
+skip_gitignore = true
+
+[tool.black]
+line_length = 88
+target_version = ['py312']
+skip_string_normalization = true
