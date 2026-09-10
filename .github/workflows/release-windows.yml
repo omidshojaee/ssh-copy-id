@@ -8,17 +8,22 @@ on:
 jobs:
   build-release:
     runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [x64, x86]
     permissions:
       contents: write
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          architecture: ${{ matrix.arch }}
 
       - name: Install dependencies
         shell: pwsh
@@ -30,21 +35,29 @@ jobs:
       - name: Build EXE
         shell: pwsh
         run: |
-          pyinstaller --onefile --name ssh-copy-id .\ssh-copy-id.py
+          pyinstaller --onefile --name ssh-copy-id-${{ matrix.arch }} .\ssh-copy-id.py
 
       - name: Rename EXE to include tag
         shell: pwsh
         run: |
           $tag = "${{ github.ref_name }}"
-          $src = Join-Path $env:GITHUB_WORKSPACE "dist\ssh-copy-id.exe"
-          $dst = Join-Path $env:GITHUB_WORKSPACE "dist\ssh-copy-id-$tag.exe"
+          $src = Join-Path $env:GITHUB_WORKSPACE "dist\ssh-copy-id-${{ matrix.arch }}.exe"
+          $dst = Join-Path $env:GITHUB_WORKSPACE "dist\ssh-copy-id-${{ matrix.arch }}-$tag.exe"
           if (Test-Path $src) {
             Move-Item -Path $src -Destination $dst -Force
           } else {
             throw "Expected build output at $src but it was not found."
           }
 
-      - name: Publish release asset
-        uses: softprops/action-gh-release@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          files: dist/*.exe
+          name: ssh-copy-id-${{ matrix.arch }}
+          path: dist/*.exe
+
+      - name: Publish release asset
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.ref_name }}" (Get-ChildItem dist\*.exe | ForEach-Object { $_.FullName }) --clobber
