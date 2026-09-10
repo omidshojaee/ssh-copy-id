@@ -55,6 +55,16 @@ jobs:
           name: ssh-copy-id-${{ matrix.arch }}
           path: dist/*.exe
 
+      - name: Create release if missing
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "${{ github.ref_name }}" 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create "${{ github.ref_name }}" --generate-notes
+          }
+
       - name: Publish release asset
         shell: pwsh
         env:
