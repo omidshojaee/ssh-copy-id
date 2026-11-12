@@ -1,0 +1,27 @@
+# Created by hand for the omidshojaee.ssh-copy-id winget package.
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.defaultLocale.1.10.0.schema.json
+
+PackageIdentifier: omidshojaee.ssh-copy-id
+PackageVersion: 2.1.1
+PackageLocale: en-US
+Publisher: Omid Shojaee
+PublisherUrl: https://github.com/omidshojaee
+PublisherSupportUrl: https://github.com/omidshojaee/ssh-copy-id/issues
+PackageName: ssh-copy-id
+PackageUrl: https://github.com/omidshojaee/ssh-copy-id
+License: GPL-3.0
+LicenseUrl: https://github.com/omidshojaee/ssh-copy-id/blob/main/LICENSE.md
+ShortDescription: A Python/paramiko re-implementation of OpenSSH's ssh-copy-id for Windows.
+Description: >-
+  ssh-copy-id installs an SSH public key on a remote server's authorized_keys
+  file, enabling passwordless logins. This is a portable Windows build of a
+  Python re-implementation of the OpenSSH ssh-copy-id shell script, since
+  Windows has no bundled ssh-copy-id.
+Tags:
+  - ssh
+  - ssh-copy-id
+  - openssh
+  - remote-access
+  - cli
+ManifestType: defaultLocale
+ManifestVersion: 1.10.0
